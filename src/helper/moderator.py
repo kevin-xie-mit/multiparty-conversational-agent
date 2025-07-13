@@ -28,7 +28,7 @@ class Moderator:
                             "Your role, as the moderator, is to facilitate communication without being intrusive. "
                             "You should only intervene in the following cases:\n"
                             "- If one speaker dominates the conversation, encourage quieter members to contribute. "
-                            "Participants have a higher chance of correctly identifying the culprit if they successfully share all their unique information.\n"
+                            "- Participants have a higher chance of correctly identifying the culprit if they successfully share all their unique information.\n"
                             "- If the discussion goes off-topic, remind participants to stay focused on the main goal of the conversation.\n"
                             "- If participants are disrespectful or using inappropriate language, ensure a civil and constructive discussion.\n"
                             "- If there are disagreements or misunderstandings between participants, acknowledge different viewpoints and integrate and summarize all key points discussed."
@@ -48,6 +48,7 @@ class Moderator:
                                 "description": (
                                     "The exact message or response to inject into the conversation. "
                                     "Should be helpful, corrective, or directive based on context."
+                                    "Return the message in English only."
                                 )
                             }
                         },
@@ -56,7 +57,6 @@ class Moderator:
                 }
             }
         ]
-
         return tools
 
     def get_moderation(self, context):
@@ -67,15 +67,21 @@ class Moderator:
             model="gpt-4o",
             messages=[
                 {"role": "system", "content": self.prompt},
-                {"role": "user", "content": context}
+                {"role": "user", "content": f"Use the following context to determine whether intervention is needed: {context}"}
             ],
-            tools=self.tools
+            tools=self.tools,
+            tool_choice="required"  # Force the model to use the function
         )
 
-        if response.choices[0].message.function_call:
-            content = response.choices[0].message.content
+        print("DEBUGGING RESPONSE: ", response.choices[0].message)
 
-            output = json.loads(content)
+        # Check for tool_calls (newer format) instead of function_call
+        if response.choices[0].message.tool_calls:
+            # Get the function arguments from the first tool call
+            function_args = response.choices[0].message.tool_calls[0].function.arguments
+            
+            # Parse the JSON arguments
+            output = json.loads(function_args)
 
             print("Debugging Output: ", output)
 
@@ -85,7 +91,8 @@ class Moderator:
                 return None
 
         else:
-            print("ERROR: No function call found in the response")
+            print("ERROR: No tool calls found in the response")
+            print("Full response:", response.choices[0].message)
             return None
 
     
