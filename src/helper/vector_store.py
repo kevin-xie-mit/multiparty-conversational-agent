@@ -73,24 +73,7 @@ class VectorStore:
         return "\n\n---\n\n".join(context_texts) if context_texts else "No relevant context found."
     
 
-    def update_long_term_context(self, conversation_history: str, previous_lt_context: str):
-        """
-        Given a short section of the chat, this function extracts the most relevant
-        information and adds it to the long-term context.
 
-        Relevant information is considered any claims that the users make, disagreements,
-        and any other information that is relevant to the murder mystery.
-
-        Args:
-            - conversation_history: str of the k most recent messages
-            - previous_lt_context: str of the previous long-term context
-
-        Returns:
-            - new_lt_context: str of the new long-term context
-
-        The new long-term context updates the previous long-term context by adding the most relevant information.
-        It also removes any information that is no longer relevant.
-        """
 
         pass
 
