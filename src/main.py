@@ -75,7 +75,6 @@ def process_chat(chat_number: int):
             recent_context = "\n".join(participant_messages[-10:]) if participant_messages else ""
 
             # Add current moderator message to tracking
-            participant_messages.append(f"MODERATOR: {message}")
             last_moderator_index = len(participant_messages) - 1  # Update the index
 
             # Update the long-term context
@@ -90,7 +89,7 @@ def process_chat(chat_number: int):
             {long_term_context}
             """
 
-            print("LT context:", long_term_context)
+            # print("LT context:", long_term_context)
 
             moderation_result = moderator.get_moderation(full_context)
             
@@ -104,4 +103,5 @@ def process_chat(chat_number: int):
 def main():
     pass
 
-process_chat(11)
+for i in range(11, 21):
+    process_chat(i)
