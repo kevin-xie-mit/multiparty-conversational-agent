@@ -25,7 +25,6 @@ def process_chat(chat_number: int):
 
     messages_so_far = []
     participant_messages = []  # Track only participant messages for context
-    last_moderator_index = -1  # Track the index of the last moderator message
     long_term_context = ""
     
     for line_num, line in enumerate(lines):
